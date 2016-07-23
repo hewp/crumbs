@@ -16,6 +16,7 @@ export default class App extends React.Component {
 			location: "37.7837-122.4090",
 			demoMode: true,
 			userLoggedIn: false,
+			roomname: 'unnamed'
 		}
 	}
 
@@ -81,8 +82,14 @@ export default class App extends React.Component {
 	}
 
 	//socket request to the main server to create a new chatroom
-	createChatRoom() {
-		this.props.mainSocket.emit('createChatRoom', this.state.location);
+	// submitfromChatRoomModal
+
+
+	createChatRoom(roomname) {
+		this.props.mainSocket.emit('createChatRoom', {location: this.state.location, roomname: roomname});
+		this.setState({
+			roomname: roomname
+		})
 	}
 	
 	//socket request to chatroom to append a new message to
@@ -138,6 +145,7 @@ export default class App extends React.Component {
 				  <Jumbotron style={jumboStyle}>
 				  	<h1>Crumbs</h1>
 				  	<p>your local chatroom</p>
+				  	<p>Room: {this.state.roomname}</p>
 				  </Jumbotron>
 				  {childToRender}
 			  </div>

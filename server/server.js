@@ -26,8 +26,8 @@ io.on('connection', function (socket) {
     socketHandlers.updateMessagesState(location, socket)
   })
 
-  socket.on('createChatRoom', function(location) {
-    socketHandlers.createChatRoom(location, socket)
+  socket.on('createChatRoom', function(roomObj) {
+    socketHandlers.createChatRoom(roomObj.location, roomObj.roomname, socket)
   })
 
   socket.on('addMessageToChatRoom', function( msgObj ) {

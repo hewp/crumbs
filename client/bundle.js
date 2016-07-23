@@ -21149,7 +21149,8 @@
 				messages: null,
 				location: "37.7837-122.4090",
 				demoMode: true,
-				userLoggedIn: false
+				userLoggedIn: false,
+				roomname: ''
 			};
 			return _this;
 		}
@@ -21230,11 +21231,15 @@
 			}
 
 			//socket request to the main server to create a new chatroom
+			// submitfromChatRoomModal
 
 		}, {
 			key: 'createChatRoom',
-			value: function createChatRoom() {
-				this.props.mainSocket.emit('createChatRoom', this.state.location);
+			value: function createChatRoom(roomname) {
+				this.props.mainSocket.emit('createChatRoom', { location: this.state.location, roomname: roomname });
+				this.setState({
+					roomname: roomname
+				});
 			}
 
 			//socket request to chatroom to append a new message to
@@ -21307,6 +21312,12 @@
 								'p',
 								null,
 								'your local chatroom'
+							),
+							_react2.default.createElement(
+								'p',
+								null,
+								'Room: ',
+								this.state.roomname
 							)
 						),
 						childToRender
@@ -65367,39 +65378,135 @@
 	});
 	exports.OutOfChatRoom = undefined;
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _reactBootstrap = __webpack_require__(175);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var style = {
 	  margin: 'auto auto',
 	  height: '100%'
 	};
 
-	var OutOfChatRoom = exports.OutOfChatRoom = function OutOfChatRoom(_ref) {
-	  var createChatRoom = _ref.createChatRoom;
-	  return React.createElement(
-	    'div',
-	    { style: style },
-	    React.createElement(
-	      'h2',
-	      null,
-	      'you are not in a Chatroom!'
-	    ),
-	    React.createElement('br', null),
-	    React.createElement(
-	      'p',
-	      null,
-	      'create a chatroom at this spot to start a thread. Leave a message for someone else to find later!'
-	    ),
-	    React.createElement('br', null),
-	    React.createElement(
-	      _reactBootstrap.Button,
-	      { bsStyle: 'primary', onClick: createChatRoom },
-	      'Create a new Chatroom!'
-	    ),
-	    React.createElement('br', null),
-	    React.createElement('br', null)
-	  );
-	};
+	var OutOfChatRoom = exports.OutOfChatRoom = function (_React$Component) {
+	  _inherits(OutOfChatRoom, _React$Component);
+
+	  function OutOfChatRoom(props) {
+	    _classCallCheck(this, OutOfChatRoom);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(OutOfChatRoom).call(this, props));
+
+	    _this.state = {
+	      show: false,
+	      romnameText: ''
+	    };
+	    _this.openModal = _this.openModal.bind(_this);
+	    _this.closeModal = _this.closeModal.bind(_this);
+	    _this.handleRoomTextChange = _this.handleRoomTextChange.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(OutOfChatRoom, [{
+	    key: 'openModal',
+	    value: function openModal() {
+	      this.setState({
+	        show: true
+	      });
+	    }
+	  }, {
+	    key: 'closeModal',
+	    value: function closeModal() {
+	      this.props.createChatRoom(this.state.roomnameText);
+	      this.setState({
+	        show: false
+	      });
+	    }
+	  }, {
+	    key: 'handleRoomTextChange',
+	    value: function handleRoomTextChange(e) {
+	      this.setState({
+	        roomnameText: e.target.value
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return React.createElement(
+	        'div',
+	        { style: style },
+	        React.createElement(
+	          'h2',
+	          null,
+	          'you are not in a Chatroom!'
+	        ),
+	        React.createElement('br', null),
+	        React.createElement(
+	          'p',
+	          null,
+	          'create a chatroom at this spot to start a thread. Leave a message for someone else to find later!'
+	        ),
+	        React.createElement('br', null),
+	        React.createElement(
+	          _reactBootstrap.Button,
+	          { bsStyle: 'primary', onClick: this.openModal },
+	          'Create a new Chatroom!'
+	        ),
+	        React.createElement(
+	          _reactBootstrap.Modal,
+	          { show: this.state.show, bsSize: 'large', 'aria-labelledby': 'contained-modal-title-lg' },
+	          React.createElement(
+	            _reactBootstrap.Modal.Header,
+	            { closeButton: true },
+	            React.createElement(
+	              _reactBootstrap.Modal.Title,
+	              { id: 'contained-modal-title-lg' },
+	              'Enter Chatroom Name'
+	            )
+	          ),
+	          React.createElement(
+	            _reactBootstrap.Modal.Body,
+	            null,
+	            React.createElement(_reactBootstrap.FormControl, {
+	              type: 'text',
+	              placeholder: 'Enter Chatroom Name',
+	              onChange: this.handleRoomTextChange
+	            })
+	          ),
+	          React.createElement(
+	            _reactBootstrap.Modal.Footer,
+	            null,
+	            React.createElement(
+	              _reactBootstrap.Button,
+	              { bsStyle: 'primary', onClick: this.closeModal },
+	              'Submit'
+	            )
+	          )
+	        ),
+	        React.createElement('br', null),
+	        React.createElement('br', null)
+	      );
+	    }
+	  }]);
+
+	  return OutOfChatRoom;
+	}(React.Component);
+
+	// export let OutOfChatRoom = ({createChatRoom}) => (
+	//   <div style={style}>
+	//     <h2>you are not in a Chatroom!</h2>
+	//     <br />
+	//     <p>create a chatroom at this spot to start a thread. Leave a message for someone else to find later!</p>
+	//     <br />
+	//     <Button bsStyle="primary" onClick={createChatRoom}>Create a new Chatroom!</Button>
+	//     <br />
+	//     <br />
+	//   </div>
+	// )
 
 /***/ },
 /* 551 */
@@ -65496,7 +65603,7 @@
 	 */
 
 	exports.Manager = __webpack_require__(564);
-	exports.Socket = __webpack_require__(590);
+	exports.Socket = __webpack_require__(592);
 
 
 /***/ },
@@ -67815,14 +67922,14 @@
 	 */
 
 	var eio = __webpack_require__(565);
-	var Socket = __webpack_require__(590);
-	var Emitter = __webpack_require__(591);
+	var Socket = __webpack_require__(592);
+	var Emitter = __webpack_require__(593);
 	var parser = __webpack_require__(557);
-	var on = __webpack_require__(593);
-	var bind = __webpack_require__(594);
+	var on = __webpack_require__(595);
+	var bind = __webpack_require__(596);
 	var debug = __webpack_require__(554)('socket.io-client:manager');
-	var indexOf = __webpack_require__(588);
-	var Backoff = __webpack_require__(596);
+	var indexOf = __webpack_require__(590);
+	var Backoff = __webpack_require__(599);
 
 	/**
 	 * IE6+ hasOwnProperty
@@ -68401,13 +68508,13 @@
 	 */
 
 	var transports = __webpack_require__(568);
-	var Emitter = __webpack_require__(561);
+	var Emitter = __webpack_require__(583);
 	var debug = __webpack_require__(554)('engine.io-client:socket');
-	var index = __webpack_require__(588);
+	var index = __webpack_require__(590);
 	var parser = __webpack_require__(574);
 	var parseuri = __webpack_require__(553);
-	var parsejson = __webpack_require__(589);
-	var parseqs = __webpack_require__(582);
+	var parsejson = __webpack_require__(591);
+	var parseqs = __webpack_require__(584);
 
 	/**
 	 * Module exports.
@@ -69137,8 +69244,8 @@
 
 	var XMLHttpRequest = __webpack_require__(569);
 	var XHR = __webpack_require__(571);
-	var JSONP = __webpack_require__(585);
-	var websocket = __webpack_require__(586);
+	var JSONP = __webpack_require__(587);
+	var websocket = __webpack_require__(588);
 
 	/**
 	 * Export transports.
@@ -69262,8 +69369,8 @@
 
 	var XMLHttpRequest = __webpack_require__(569);
 	var Polling = __webpack_require__(572);
-	var Emitter = __webpack_require__(561);
-	var inherit = __webpack_require__(583);
+	var Emitter = __webpack_require__(583);
+	var inherit = __webpack_require__(585);
 	var debug = __webpack_require__(554)('engine.io-client:polling-xhr');
 
 	/**
@@ -69680,10 +69787,10 @@
 	 */
 
 	var Transport = __webpack_require__(573);
-	var parseqs = __webpack_require__(582);
+	var parseqs = __webpack_require__(584);
 	var parser = __webpack_require__(574);
-	var inherit = __webpack_require__(583);
-	var yeast = __webpack_require__(584);
+	var inherit = __webpack_require__(585);
+	var yeast = __webpack_require__(586);
 	var debug = __webpack_require__(554)('engine.io-client:polling');
 
 	/**
@@ -69933,7 +70040,7 @@
 	 */
 
 	var parser = __webpack_require__(574);
-	var Emitter = __webpack_require__(561);
+	var Emitter = __webpack_require__(583);
 
 	/**
 	 * Module exports.
@@ -70095,10 +70202,10 @@
 
 	var keys = __webpack_require__(575);
 	var hasBinary = __webpack_require__(576);
-	var sliceBuffer = __webpack_require__(577);
-	var base64encoder = __webpack_require__(578);
-	var after = __webpack_require__(579);
-	var utf8 = __webpack_require__(580);
+	var sliceBuffer = __webpack_require__(578);
+	var base64encoder = __webpack_require__(579);
+	var after = __webpack_require__(580);
+	var utf8 = __webpack_require__(581);
 
 	/**
 	 * Check if we are running an android browser. That requires us to use
@@ -70155,7 +70262,7 @@
 	 * Create a blob api even for blob builder when vendor prefixes exist
 	 */
 
-	var Blob = __webpack_require__(581);
+	var Blob = __webpack_require__(582);
 
 	/**
 	 * Encodes a packet.
@@ -70720,7 +70827,7 @@
 	 * Module requirements.
 	 */
 
-	var isArray = __webpack_require__(560);
+	var isArray = __webpack_require__(577);
 
 	/**
 	 * Module exports.
@@ -70780,6 +70887,15 @@
 /* 577 */
 /***/ function(module, exports) {
 
+	module.exports = Array.isArray || function (arr) {
+	  return Object.prototype.toString.call(arr) == '[object Array]';
+	};
+
+
+/***/ },
+/* 578 */
+/***/ function(module, exports) {
+
 	/**
 	 * An abstraction for slicing an arraybuffer even when
 	 * ArrayBuffer.prototype.slice is not supported
@@ -70812,7 +70928,7 @@
 
 
 /***/ },
-/* 578 */
+/* 579 */
 /***/ function(module, exports) {
 
 	/*
@@ -70877,7 +70993,7 @@
 
 
 /***/ },
-/* 579 */
+/* 580 */
 /***/ function(module, exports) {
 
 	module.exports = after
@@ -70911,7 +71027,7 @@
 
 
 /***/ },
-/* 580 */
+/* 581 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! https://mths.be/utf8js v2.0.0 by @mathias */
@@ -71160,7 +71276,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(447)(module), (function() { return this; }())))
 
 /***/ },
-/* 581 */
+/* 582 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -71263,7 +71379,177 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 582 */
+/* 583 */
+/***/ function(module, exports) {
+
+	
+	/**
+	 * Expose `Emitter`.
+	 */
+
+	module.exports = Emitter;
+
+	/**
+	 * Initialize a new `Emitter`.
+	 *
+	 * @api public
+	 */
+
+	function Emitter(obj) {
+	  if (obj) return mixin(obj);
+	};
+
+	/**
+	 * Mixin the emitter properties.
+	 *
+	 * @param {Object} obj
+	 * @return {Object}
+	 * @api private
+	 */
+
+	function mixin(obj) {
+	  for (var key in Emitter.prototype) {
+	    obj[key] = Emitter.prototype[key];
+	  }
+	  return obj;
+	}
+
+	/**
+	 * Listen on the given `event` with `fn`.
+	 *
+	 * @param {String} event
+	 * @param {Function} fn
+	 * @return {Emitter}
+	 * @api public
+	 */
+
+	Emitter.prototype.on =
+	Emitter.prototype.addEventListener = function(event, fn){
+	  this._callbacks = this._callbacks || {};
+	  (this._callbacks[event] = this._callbacks[event] || [])
+	    .push(fn);
+	  return this;
+	};
+
+	/**
+	 * Adds an `event` listener that will be invoked a single
+	 * time then automatically removed.
+	 *
+	 * @param {String} event
+	 * @param {Function} fn
+	 * @return {Emitter}
+	 * @api public
+	 */
+
+	Emitter.prototype.once = function(event, fn){
+	  var self = this;
+	  this._callbacks = this._callbacks || {};
+
+	  function on() {
+	    self.off(event, on);
+	    fn.apply(this, arguments);
+	  }
+
+	  on.fn = fn;
+	  this.on(event, on);
+	  return this;
+	};
+
+	/**
+	 * Remove the given callback for `event` or all
+	 * registered callbacks.
+	 *
+	 * @param {String} event
+	 * @param {Function} fn
+	 * @return {Emitter}
+	 * @api public
+	 */
+
+	Emitter.prototype.off =
+	Emitter.prototype.removeListener =
+	Emitter.prototype.removeAllListeners =
+	Emitter.prototype.removeEventListener = function(event, fn){
+	  this._callbacks = this._callbacks || {};
+
+	  // all
+	  if (0 == arguments.length) {
+	    this._callbacks = {};
+	    return this;
+	  }
+
+	  // specific event
+	  var callbacks = this._callbacks[event];
+	  if (!callbacks) return this;
+
+	  // remove all handlers
+	  if (1 == arguments.length) {
+	    delete this._callbacks[event];
+	    return this;
+	  }
+
+	  // remove specific handler
+	  var cb;
+	  for (var i = 0; i < callbacks.length; i++) {
+	    cb = callbacks[i];
+	    if (cb === fn || cb.fn === fn) {
+	      callbacks.splice(i, 1);
+	      break;
+	    }
+	  }
+	  return this;
+	};
+
+	/**
+	 * Emit `event` with the given args.
+	 *
+	 * @param {String} event
+	 * @param {Mixed} ...
+	 * @return {Emitter}
+	 */
+
+	Emitter.prototype.emit = function(event){
+	  this._callbacks = this._callbacks || {};
+	  var args = [].slice.call(arguments, 1)
+	    , callbacks = this._callbacks[event];
+
+	  if (callbacks) {
+	    callbacks = callbacks.slice(0);
+	    for (var i = 0, len = callbacks.length; i < len; ++i) {
+	      callbacks[i].apply(this, args);
+	    }
+	  }
+
+	  return this;
+	};
+
+	/**
+	 * Return array of callbacks for `event`.
+	 *
+	 * @param {String} event
+	 * @return {Array}
+	 * @api public
+	 */
+
+	Emitter.prototype.listeners = function(event){
+	  this._callbacks = this._callbacks || {};
+	  return this._callbacks[event] || [];
+	};
+
+	/**
+	 * Check if this emitter has `event` handlers.
+	 *
+	 * @param {String} event
+	 * @return {Boolean}
+	 * @api public
+	 */
+
+	Emitter.prototype.hasListeners = function(event){
+	  return !! this.listeners(event).length;
+	};
+
+
+/***/ },
+/* 584 */
 /***/ function(module, exports) {
 
 	/**
@@ -71306,7 +71592,7 @@
 
 
 /***/ },
-/* 583 */
+/* 585 */
 /***/ function(module, exports) {
 
 	
@@ -71318,7 +71604,7 @@
 	};
 
 /***/ },
-/* 584 */
+/* 586 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -71392,7 +71678,7 @@
 
 
 /***/ },
-/* 585 */
+/* 587 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {
@@ -71401,7 +71687,7 @@
 	 */
 
 	var Polling = __webpack_require__(572);
-	var inherit = __webpack_require__(583);
+	var inherit = __webpack_require__(585);
 
 	/**
 	 * Module exports.
@@ -71637,7 +71923,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 586 */
+/* 588 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -71646,9 +71932,9 @@
 
 	var Transport = __webpack_require__(573);
 	var parser = __webpack_require__(574);
-	var parseqs = __webpack_require__(582);
-	var inherit = __webpack_require__(583);
-	var yeast = __webpack_require__(584);
+	var parseqs = __webpack_require__(584);
+	var inherit = __webpack_require__(585);
+	var yeast = __webpack_require__(586);
 	var debug = __webpack_require__(554)('engine.io-client:websocket');
 	var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
 
@@ -71661,7 +71947,7 @@
 	var WebSocket = BrowserWebSocket;
 	if (!WebSocket && typeof window === 'undefined') {
 	  try {
-	    WebSocket = __webpack_require__(587);
+	    WebSocket = __webpack_require__(589);
 	  } catch (e) { }
 	}
 
@@ -71932,13 +72218,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 587 */
+/* 589 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 588 */
+/* 590 */
 /***/ function(module, exports) {
 
 	
@@ -71953,7 +72239,7 @@
 	};
 
 /***/ },
-/* 589 */
+/* 591 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -71991,7 +72277,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 590 */
+/* 592 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -72000,12 +72286,12 @@
 	 */
 
 	var parser = __webpack_require__(557);
-	var Emitter = __webpack_require__(591);
-	var toArray = __webpack_require__(592);
-	var on = __webpack_require__(593);
-	var bind = __webpack_require__(594);
+	var Emitter = __webpack_require__(593);
+	var toArray = __webpack_require__(594);
+	var on = __webpack_require__(595);
+	var bind = __webpack_require__(596);
 	var debug = __webpack_require__(554)('socket.io-client:socket');
-	var hasBin = __webpack_require__(595);
+	var hasBin = __webpack_require__(597);
 
 	/**
 	 * Module exports.
@@ -72409,7 +72695,7 @@
 
 
 /***/ },
-/* 591 */
+/* 593 */
 /***/ function(module, exports) {
 
 	
@@ -72576,7 +72862,7 @@
 
 
 /***/ },
-/* 592 */
+/* 594 */
 /***/ function(module, exports) {
 
 	module.exports = toArray
@@ -72595,7 +72881,7 @@
 
 
 /***/ },
-/* 593 */
+/* 595 */
 /***/ function(module, exports) {
 
 	
@@ -72625,7 +72911,7 @@
 
 
 /***/ },
-/* 594 */
+/* 596 */
 /***/ function(module, exports) {
 
 	/**
@@ -72654,7 +72940,7 @@
 
 
 /***/ },
-/* 595 */
+/* 597 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {
@@ -72662,7 +72948,7 @@
 	 * Module requirements.
 	 */
 
-	var isArray = __webpack_require__(560);
+	var isArray = __webpack_require__(598);
 
 	/**
 	 * Module exports.
@@ -72720,7 +73006,16 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 596 */
+/* 598 */
+/***/ function(module, exports) {
+
+	module.exports = Array.isArray || function (arr) {
+	  return Object.prototype.toString.call(arr) == '[object Array]';
+	};
+
+
+/***/ },
+/* 599 */
 /***/ function(module, exports) {
 
 	

@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var Token_Schema = mongoose.Schema({
   location: String,
+  roomname: String,
   messages: [{message: String, username: String, createdAt: {type: Date, default: Date.now}}],
 });
 

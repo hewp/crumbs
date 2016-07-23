@@ -13,9 +13,10 @@ module.exports = {
   },
 
   //function takes in array of lat and long and will write a key (lat long array) value (empty array for messages) to db
-  createChatRoom: function(location, socket) {
+  createChatRoom: function(location, roomname, socket) {
     new Models.Token({
       location: location,
+      roomname: roomname,
       messages: [],
     }).save((err, data) => {
       return new Promise((resolve, reject) => {
