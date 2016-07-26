@@ -9,6 +9,7 @@ export const Authenticated = (props) => {
       messages={props.messages}
       user={props.userLoggedIn}
       addMessageToChatRoom={props.addMessageToChatRoom}
+      roomname={props.roomname}
     />
   );
 

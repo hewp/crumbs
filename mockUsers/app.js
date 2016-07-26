@@ -1,3 +1,4 @@
+
 var socket = io.connect('http://localhost:8000');
 
 var updateMapLocation = function(location) {

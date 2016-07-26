@@ -10,12 +10,14 @@ export class SignUp extends React.Component {
     return (
       <div>
         <form>
-          <Button 
+          <Button
+            style={{cursor: 'pointer'}} 
             onClick={this.props.logIn} 
             bsStyle="link"> 
             Already have an account? 
           </Button>
-          <Button 
+          <Button
+            style={{cursor: 'pointer'}} 
             onClick={this.props.validateUserSignup.bind(this)}
             bsStyle="primary"> 
             Sign Up 

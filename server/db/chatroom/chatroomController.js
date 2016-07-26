@@ -13,9 +13,10 @@ module.exports = {
   },
 
   // takes in array of lat and long and will write a key (lat long array) value (empty array for messages) to db
-  createChatRoom: (location, socket) => {
+  createChatRoom: (location, roomname, username, socket) => {
     Chatroom.create({
       location,
+      roomname,
       messages: [],
     }).then((data) => {
       socket.emit('updateMessagesState', data);
@@ -28,11 +29,13 @@ module.exports = {
   addMessageToChatRoom: (location, message, username, socket) => {
     var tokenDataReturn = {};
     Chatroom.findOne({ location }, (err, tokenData) => {
-      var newMessages = tokenData.messages;
+      var newMessages = tokenData ? tokenData.messages : [];
       newMessages.unshift({ message, username });
       tokenDataReturn.messages = newMessages;
       Chatroom.update({ location }, { messages: newMessages }, (err, dataBaseResponse) => {
-        socket.emit('updateMessagesState', tokenDataReturn);
+        Chatroom.findOne({ location }, (err, tokenData) => {
+          socket.emit('updateMessagesState', tokenData);
+        });
       });
     });
   },

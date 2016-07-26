@@ -6,8 +6,8 @@ module.exports = (socket) => {
     chatroomController.updateMessagesState(location, socket);
   });
 
-  socket.on('createChatRoom', (location) => {
-    chatroomController.createChatRoom(location, socket);
+  socket.on('createChatRoom', (roomObj) => {
+    chatroomController.createChatRoom(roomObj.location, roomObj.roomname, roomObj.username, socket);
   });
 
   socket.on('addMessageToChatRoom', (msgObj) => {
@@ -21,4 +21,5 @@ module.exports = (socket) => {
   socket.on('validateUserSignup', (userCredentials) => {
     userController.validateUserSignup(userCredentials.username, userCredentials.password, socket);
   });
+
 };

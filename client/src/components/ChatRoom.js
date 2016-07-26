@@ -14,8 +14,9 @@ export class ChatRoom extends React.Component {
   render() {
     return (
       <div>
-      <AddMessage addMessageToChatRoom={this.props.addMessageToChatRoom}/>
-      <MessageList messages={this.props.messages}/>
+      <AddMessage addMessageToChatRoom={this.props.addMessageToChatRoom} 
+                  roomname={this.props.roomname} />
+      <MessageList messages={this.props.messages} />
       </div>
     )
   }

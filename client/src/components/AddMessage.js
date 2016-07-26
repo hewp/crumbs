@@ -27,7 +27,8 @@ export class AddMessage extends React.Component {
     return (
       <form>
         <FormGroup controlId="formBasicText">
-          <ControlLabel>Add a message to the chatroom</ControlLabel>
+          <p>You are in chatroom <strong>{this.props.roomname}</strong> </p>
+          <ControlLabel>Add a message </ControlLabel>
           <FormControl
             type="text"
             value={this.state.message}

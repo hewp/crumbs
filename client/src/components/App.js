@@ -12,6 +12,7 @@ export default class App extends React.Component {
       location: '37.7837-122.4090',
       demoMode: true,
       userLoggedIn: false,
+      roomname: '',
     };
   }
 
@@ -38,8 +39,10 @@ export default class App extends React.Component {
     //listens for a messages update from the main server
     this.props.mainSocket.on('updateMessagesState', (location) => {
       const messages = location ? location.messages : null;
+      const roomname = location ? location.roomname : null;
       this.setState({
         messages,
+        roomname,
       });
     });
 
@@ -47,14 +50,23 @@ export default class App extends React.Component {
       this.setState({
         userLoggedIn: user,
       });
+      if ( user !== false && this.state.roomname !== '' ) {
+      	let msg = `${this.state.userLoggedIn} has entered the chatroom`;
+    	this.props.mainSocket.emit('addMessageToChatRoom', {location: this.state.location, roomname: this.state.roomname, message: msg, username: this.state.userLoggedIn});  	
+      }
     });
+
   }
 
   //will continulally update our location state with our new position returned form navigator.geolocation and check if we are in chat room
   setPosition(position) {
-    const latRound = position.coords.latitude.toFixed(3);
-    const lonRound = position.coords.longitude.toFixed(3);
+    const latRound = position.coords.latitude.toFixed(7);
+    const lonRound = position.coords.longitude.toFixed(7);
     const location = latRound.toString() + lonRound.toString();
+    if ( location !== this.state.location ) {
+   	  let msg = `${this.state.userLoggedIn} has left the chatroom`;
+      this.addMessageToChatRoom(msg);	
+    }
     this.setState({
       location,
     });
@@ -81,8 +93,14 @@ export default class App extends React.Component {
   }
 
   //socket request to the main server to create a new chatroom
-  createChatRoom() {
-    this.props.mainSocket.emit('createChatRoom', this.state.location);
+  createChatRoom(roomname) {
+    this.props.mainSocket.emit('createChatRoom', {location: this.state.location, roomname: roomname, username: this.state.userLoggedIn});
+    this.setState({
+    	roomname,
+    });
+    let msg = `${this.state.userLoggedIn} has entered the chatroom`;
+    this.addMessageToChatRoom(msg);	
+  
   }
 
   //socket request to chatroom to append a new message to
@@ -91,6 +109,8 @@ export default class App extends React.Component {
   }
 
   logOutUser() {
+  	let msg = `${this.state.userLoggedIn} has left the chatroom`;
+    this.addMessageToChatRoom(msg);	
     this.setState({
       userLoggedIn: false,
     });
@@ -104,6 +124,7 @@ export default class App extends React.Component {
         addMessageToChatRoom={this.addMessageToChatRoom}
         createChatRoom={this.createChatRoom}
         logOutUser={this.logOutUser}
+        roomname={this.state.roomname}
       />
     );
 

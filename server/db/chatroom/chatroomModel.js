@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const chatroomSchema = mongoose.Schema({
   location: String,
+  roomname: String,
   messages: [{message: String, username: String, createdAt: {type: Date, default: Date.now}}],
 });
 
